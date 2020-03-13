@@ -1,16 +1,13 @@
 import Vue from 'vue';
 import Vuex, { StoreOptions } from 'vuex';
 import {State, Item} from '@/store/sotre.interface.ts';
+import AxiosService from '@/service/axios.service.ts';
+import Axios, { AxiosResponse } from 'axios';
 Vue.use(Vuex);
 
 const store: StoreOptions<State> = {
   state: {
-    todoList: [
-      {id: 0, title: 'test0', status: 'active'},
-      {id: 1, title: 'test1', status: 'active'},
-      {id: 2, title: 'test2', status: 'active'},
-      {id: 3, title: 'test3', status: 'clear'},
-    ],
+    todoList: [],
   },
   mutations: {
     // TODO add
@@ -25,9 +22,17 @@ const store: StoreOptions<State> = {
     removeItem(state, id: number) {
       state.todoList.splice(id, 1);
     },
+
+    setTodoList(state, todoList: Item[]) {
+      state.todoList = todoList;
+    },
   },
   actions: {
     // 서버와의 통신 및 비지니스 로직이 실행되는 부분
+    async initData({commit}) {
+      const response: AxiosResponse<{todoList: Item[]}> = await AxiosService.instance.get('/data.json');
+      commit('setTodoList', response.data.todoList);
+    },
   },
   getters: {
     allTodoList: (state) => state.todoList,

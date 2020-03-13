@@ -25,12 +25,14 @@ import {mapGetters} from 'vuex';
 export default class ItemList extends Vue {
 
   renderList: any[] = [];
-  allTodoList: any[] = [];
-  activeTodoList: any[] = [];
-  clearTodoList: any[] = [];
+  allTodoList!: any[];
+  activeTodoList!: any[];
+  clearTodoList!: any[];
 
   created() {
-    this.initRenderList(this.$route.params.status);
+    // this.initRenderList(this.$route.params.status);
+    // $store.state.todoList init
+    this.$store.dispatch('initData');
   }
 
   initRenderList(status: string) {
@@ -48,6 +50,8 @@ export default class ItemList extends Vue {
   routeUpdate(newValue: 'active' | 'clear') {
     this.initRenderList(newValue);
   }
+
+  // $store.dispatch('initData') 실행시 state에 저장된 todoList에 변경이 일어난다.
   @Watch('$store.state.todoList', {deep: true})
   stateUpdate() {
     this.initRenderList(this.$route.params.status);
